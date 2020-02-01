@@ -43,8 +43,9 @@ trait Utils
 
     private function sendError($message, $code = 404)
     {
+        $response['message'] = $message;
         return response()->json(
-            $message, $code
+            $response, $code
         );
     }
 }

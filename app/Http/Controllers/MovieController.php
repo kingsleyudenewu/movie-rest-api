@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ServiceException;
+use App\Interfaces\StatusCode;
 use App\Traits\Utils;
 use Illuminate\Http\Request;
 
@@ -11,13 +13,17 @@ class MovieController extends Controller
 
     public function movies()
     {
-        $movies = $this->getRequest(env('BASE_URL'));
+        $headers = [
+            'Authorization: Bearer ' . env('API_KEY'),
+            'Content-Type: application/json'
+        ];
+        $movies = $this->getRequest(env('BASE_URL'), $headers);
 
-        if (is_null(optional($movies)->docs))
+        if (is_null(optional($movies)->docs) || !$movies)
         {
-            return $this->sendError("Data not found");
+            throw new ServiceException("Data not found", StatusCode::NOT_FOUND);
         }
 
-        return $this->sendSuccess("success");
+        return $this->sendSuccess("success", $movies->docs);
     }
 }
