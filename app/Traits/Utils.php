@@ -31,10 +31,13 @@ trait Utils
         return false;
     }
 
-    private function sendSuccess($message, $code = 200)
+    private function sendSuccess($message, $data, $code = 200)
     {
+        $response['message'] = $message;
+        $response['data'] = $data;
+
         return response()->json(
-            $message, $code
+            $response, $code
         );
     }
 
