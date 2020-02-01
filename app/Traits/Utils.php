@@ -30,4 +30,18 @@ trait Utils
         if (!is_null($response))return $response;
         return false;
     }
+
+    private function sendSuccess($message, $code = 200)
+    {
+        return response()->json(
+            $message, $code
+        );
+    }
+
+    private function sendError($message, $code = 404)
+    {
+        return response()->json(
+            $message, $code
+        );
+    }
 }
