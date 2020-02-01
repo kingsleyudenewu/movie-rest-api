@@ -15,11 +15,11 @@ trait Utils
             ->asJson()
             ->get();
 
-        if (!is_null($response))return $response;
+        if (!is_null($response)) return $response;
         return false;
     }
 
-    private function postRequest($url, $data, $header=[])
+    private function postRequest($url, $data, $header = [])
     {
         $response = Curl::to($url)
             ->withHeaders($header)
@@ -27,7 +27,7 @@ trait Utils
             ->asJson()
             ->post();
 
-        if (!is_null($response))return $response;
+        if (!is_null($response)) return $response;
         return false;
     }
 
