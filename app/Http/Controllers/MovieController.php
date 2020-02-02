@@ -7,11 +7,12 @@ use App\Interfaces\StatusCode;
 use App\Traits\Utils;
 use Illuminate\Http\Request;
 
+
 class MovieController extends Controller
 {
     use Utils;
 
-    public function movies()
+    public function movies(Request $request)
     {
         $headers = [
             'Authorization: Bearer ' . env('API_KEY'),
@@ -24,6 +25,24 @@ class MovieController extends Controller
             throw new ServiceException("Data not found", StatusCode::NOT_FOUND);
         }
 
-        return $this->sendSuccess("success", $movies->docs);
+
+        switch ($request->sort_by) {
+            case "budget":
+                $data = collect($movies->docs)->sortBy('budgetInMillions')->toArray();
+                return $this->sendSuccess("success", $data);
+                break;
+            case "runtime":
+                $data = collect($movies->docs)->sortBy('runtimeInMinutes')->toArray();
+                return $this->sendSuccess("success", $data);
+                break;
+            case "box_office":
+                $data = collect($movies->docs)->sortBy('boxOfficeRevenueInMillions')->toArray();
+                return $this->sendSuccess("success", $data);
+                break;
+            default:
+                return $this->sendSuccess("success", $movies->docs);
+        }
+
+
     }
 }
