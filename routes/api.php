@@ -19,6 +19,5 @@ use Illuminate\Http\Request;
 
 Route::group(['prefix' => 'v1'], function (){
     Route::get('/movies/{sort_by?}', 'MovieController@movies');
-    Route::get('/characters', 'MovieController@characters');
-    Route::get('/characters/{race}/{gender}', 'MovieController@characterRaceGender');
+    Route::get('/characters/{sort_by?}/{per_page?}', 'MovieController@characters');
 });

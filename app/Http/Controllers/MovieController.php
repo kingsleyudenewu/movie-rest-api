@@ -59,23 +59,27 @@ class MovieController extends Controller
 
         $page = $request->per_page ? $request->per_page : 15;
 
-        $data = collect($characters->docs)->sortBy('_id')->toArray();
-        $paginate_characters = $this->paginate($data, $page);
+        switch ($request->sort_by) {
+            case "asc":
+                $data = collect($characters->docs)
+                    ->sortBy('race')
+                    ->sortBy('gender')
+                    ->sortBy('_id')
+                    ->values()
+                    ->all();
 
-        return $this->sendSuccess("success", $paginate_characters);
-    }
+                $paginate_characters = $this->paginate($data, $page);
+                return $this->sendSuccess("success", $paginate_characters->values()->all());
+            case "desc":
+                $data = collect($characters->docs)
+                    ->sortBy('race')
+                    ->sortBy('gender')
+                    ->sortByDesc('_id')
+                    ->values()
+                    ->all();
 
-    public function characterRaceGender(Request $request)
-    {
-        $headers = [
-            'Authorization: Bearer ' . env('API_KEY'),
-            'Content-Type: application/json'
-        ];
-        $characters = $this->getRequest(env('BASE_URL').'character', $headers);
-
-        if (is_null(optional($characters)->docs) || !$characters)
-        {
-            throw new ServiceException("Data not found", StatusCode::NOT_FOUND);
+                $paginate_characters = $this->paginate($data, $page);
+                return $this->sendSuccess("success", $paginate_characters->values()->all());
         }
     }
 }
