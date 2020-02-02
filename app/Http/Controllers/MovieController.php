@@ -28,15 +28,15 @@ class MovieController extends Controller
 
         switch ($request->sort_by) {
             case "budget":
-                $data = collect($movies->docs)->sortBy('budgetInMillions')->toArray();
+                $data = collect($movies->docs)->sortBy('budgetInMillions')->values()->all();
                 return $this->sendSuccess("success", $data);
                 break;
             case "runtime":
-                $data = collect($movies->docs)->sortBy('runtimeInMinutes')->toArray();
+                $data = collect($movies->docs)->sortBy('runtimeInMinutes')->values()->all();
                 return $this->sendSuccess("success", $data);
                 break;
             case "box_office":
-                $data = collect($movies->docs)->sortBy('boxOfficeRevenueInMillions')->toArray();
+                $data = collect($movies->docs)->sortBy('boxOfficeRevenueInMillions')->values()->all();
                 return $this->sendSuccess("success", $data);
                 break;
             default:
@@ -57,8 +57,25 @@ class MovieController extends Controller
             throw new ServiceException("Data not found", StatusCode::NOT_FOUND);
         }
 
-        $paginate_characters = $this->paginate($characters->docs, 5);
+        $page = $request->per_page ? $request->per_page : 15;
+
+        $data = collect($characters->docs)->sortBy('_id')->toArray();
+        $paginate_characters = $this->paginate($data, $page);
 
         return $this->sendSuccess("success", $paginate_characters);
+    }
+
+    public function characterRaceGender(Request $request)
+    {
+        $headers = [
+            'Authorization: Bearer ' . env('API_KEY'),
+            'Content-Type: application/json'
+        ];
+        $characters = $this->getRequest(env('BASE_URL').'character', $headers);
+
+        if (is_null(optional($characters)->docs) || !$characters)
+        {
+            throw new ServiceException("Data not found", StatusCode::NOT_FOUND);
+        }
     }
 }
