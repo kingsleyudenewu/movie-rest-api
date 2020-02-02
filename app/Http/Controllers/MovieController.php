@@ -18,7 +18,7 @@ class MovieController extends Controller
             'Authorization: Bearer ' . env('API_KEY'),
             'Content-Type: application/json'
         ];
-        $movies = $this->getRequest(env('BASE_URL'), $headers);
+        $movies = $this->getRequest(env('BASE_URL').'movie', $headers);
 
         if (is_null(optional($movies)->docs) || !$movies)
         {
@@ -42,7 +42,23 @@ class MovieController extends Controller
             default:
                 return $this->sendSuccess("success", $movies->docs);
         }
+    }
 
+    public function characters(Request $request)
+    {
+        $headers = [
+            'Authorization: Bearer ' . env('API_KEY'),
+            'Content-Type: application/json'
+        ];
+        $characters = $this->getRequest(env('BASE_URL').'character', $headers);
 
+        if (is_null(optional($characters)->docs) || !$characters)
+        {
+            throw new ServiceException("Data not found", StatusCode::NOT_FOUND);
+        }
+
+        $paginate_characters = $this->paginate($characters->docs, 5);
+
+        return $this->sendSuccess("success", $paginate_characters);
     }
 }
