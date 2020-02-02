@@ -18,10 +18,9 @@ class MovieController extends Controller
             'Authorization: Bearer ' . env('API_KEY'),
             'Content-Type: application/json'
         ];
-        $movies = $this->getRequest(env('BASE_URL').'movie', $headers);
+        $movies = $this->getRequest(env('BASE_URL') . 'movie', $headers);
 
-        if (is_null(optional($movies)->docs) || !$movies)
-        {
+        if (is_null(optional($movies)->docs) || !$movies) {
             throw new ServiceException("Data not found", StatusCode::NOT_FOUND);
         }
 
@@ -50,10 +49,9 @@ class MovieController extends Controller
             'Authorization: Bearer ' . env('API_KEY'),
             'Content-Type: application/json'
         ];
-        $characters = $this->getRequest(env('BASE_URL').'character', $headers);
+        $characters = $this->getRequest(env('BASE_URL') . 'character', $headers);
 
-        if (is_null(optional($characters)->docs) || !$characters)
-        {
+        if (is_null(optional($characters)->docs) || !$characters) {
             throw new ServiceException("Data not found", StatusCode::NOT_FOUND);
         }
 
@@ -75,6 +73,15 @@ class MovieController extends Controller
                     ->sortBy('race')
                     ->sortBy('gender')
                     ->sortByDesc('_id')
+                    ->values()
+                    ->all();
+
+                $paginate_characters = $this->paginate($data, $page);
+                return $this->sendSuccess("success", $paginate_characters->values()->all());
+            default:
+                $data = collect($characters->docs)
+                    ->sortBy('race')
+                    ->sortBy('gender')
                     ->values()
                     ->all();
 
