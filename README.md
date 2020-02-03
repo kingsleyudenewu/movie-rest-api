@@ -28,7 +28,11 @@ This is a laravel rest API that connects to [The One API](https://the-one-api.he
  </p>
  
  <div class="highlight">
-    <pre></pre>
+    sort_by
+    <pre>
+        -asc
+        -desc
+    </pre>
  </div>
 
 - [Simple, fast routing engine](https://laravel.com/docs/routing).
